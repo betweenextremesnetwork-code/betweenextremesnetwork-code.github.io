@@ -1,3 +1,6 @@
+---
+layout: none
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,274 +12,845 @@
 <meta name="apple-mobile-web-app-title" content="reRouter">
 <title>reRouter</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  :root{--bg:#0A0A0F;--surface:#13131A;--surface2:#1C1C27;--border:#2A2A38;--accent:#4F6EF7;--accent2:#7B93FF;--success:#22C55E;--danger:#EF4444;--text:#F0F0F8;--muted:#6B6B82;--nav-h:68px}
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden}
-  #app{height:100%;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative}
-  .screen{display:none;flex:1;overflow-y:auto;padding:0 0 var(--nav-h)}.screen.active{display:flex;flex-direction:column}
-  .topbar{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border)}
-  .topbar h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}.topbar h1 span{color:var(--accent)}
-  .topbar-sub{font-size:13px;color:var(--muted);font-weight:500}
-  #bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav-h);background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100}
-  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;transition:color .15s;letter-spacing:.3px}
-  .nav-btn svg{width:22px;height:22px}.nav-btn.active{color:var(--accent2)}
-  .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 20px;border-radius:12px;border:none;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;width:100%}
-  .btn:active{transform:scale(.97);opacity:.85}.btn-primary{background:var(--accent);color:#fff}.btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}.btn-sm{padding:10px 14px;font-size:13px;border-radius:9px;width:auto}
-  input,textarea{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:15px;padding:13px 14px;width:100%;outline:none;transition:border-color .15s}
-  input:focus,textarea:focus{border-color:var(--accent)}textarea{resize:none;min-height:70px}
-  label{font-size:13px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
-  .home-header{padding:20px 20px 8px}.home-header h2{font-size:26px;font-weight:800;letter-spacing:-.5px}.home-header p{color:var(--muted);font-size:14px;margin-top:4px}
-  .route-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin:0 16px 12px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:14px}
-  .route-card:active{border-color:var(--accent)}.route-icon{width:46px;height:46px;background:rgba(79,110,247,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
-  .route-info{flex:1;min-width:0}.route-name{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.route-meta{font-size:12px;color:var(--muted);margin-top:3px}.route-arrow{color:var(--muted)}
-  .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:12px;text-align:center}.empty-icon{font-size:48px;margin-bottom:8px}.empty-state h3{font-size:18px;font-weight:700}.empty-state p{color:var(--muted);font-size:14px;line-height:1.5}
-  .rec-status{margin:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
-  .rec-live-dot{width:10px;height:10px;border-radius:50%;background:var(--danger);display:inline-block;animation:pulse 1.2s infinite;margin-right:8px}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .rec-label{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}.rec-value{font-size:28px;font-weight:800;letter-spacing:-1px;margin-top:2px}
-  .stops-list{padding:0 16px}.stop-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}.stop-item:last-child{border-bottom:none}
-  .stop-num{width:28px;height:28px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;margin-top:2px}
-  .stop-details{flex:1}.stop-name{font-weight:600;font-size:14px}.stop-note{font-size:12px;color:var(--muted);margin-top:2px}.stop-coords{font-size:11px;color:var(--border);margin-top:2px;font-family:monospace}
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-end;justify-content:center}.modal-overlay.open{display:flex}
-  .modal{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:14px}
-  .modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 8px}.modal h3{font-size:18px;font-weight:700}
-  .nav-progress{margin:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
-  .progress-bar{height:6px;background:var(--border);border-radius:3px;margin-top:10px;overflow:hidden}.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s ease}
-  .current-stop-card{margin:0 16px 12px;background:linear-gradient(135deg,rgba(79,110,247,.12),rgba(123,147,255,.06));border:1.5px solid rgba(79,110,247,.3);border-radius:16px;padding:20px}
-  .current-stop-label{font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
-  .current-stop-name{font-size:24px;font-weight:800;letter-spacing:-.5px}.current-stop-note{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.4}.current-stop-num{font-size:13px;color:var(--muted);margin-top:10px}
-  .nav-actions{padding:0 16px;display:flex;flex-direction:column;gap:10px}
-  .upcoming-list{padding:8px 16px 0}.upcoming-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
-  .upcoming-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);opacity:.6}.upcoming-item:last-child{border-bottom:none}
-  .upcoming-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0}
-  .done-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;gap:12px}
-  .done-icon{font-size:56px;margin-bottom:8px}.done-state h3{font-size:22px;font-weight:800}.done-state p{color:var(--muted);font-size:14px}
-  .route-select-item{padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:8px;transition:border-color .15s}.route-select-item:active{border-color:var(--accent)}
-  .route-select-name{font-weight:700;font-size:15px}.route-select-meta{font-size:12px;color:var(--muted);margin-top:3px}
-  .section-pad{padding:16px}.flex-row{display:flex;gap:10px}.flex-row .btn{flex:1}
-  #perm-banner{display:none;margin:12px 16px 0;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:14px;font-size:13px;line-height:1.5;color:#F59E0B}
-  #perm-banner b{display:block;margin-bottom:4px;font-size:14px}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #0A0A0F;
+  --surface: #13131A;
+  --surface2: #1C1C27;
+  --border: #2A2A38;
+  --accent: #4F6EF7;
+  --accent2: #7B93FF;
+  --success: #22C55E;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --text: #F0F0F8;
+  --muted: #6B6B82;
+  --purple: #7B5FA8;
+  --purple-faint: #3A2A5A;
+  --nav-h: 68px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; }
+#app { height: 100%; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; position: relative; }
+
+.screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding-bottom: var(--nav-h); }
+.screen.active { display: flex; }
+
+.topbar {
+  padding: 14px 20px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg); position: sticky; top: 0; z-index: 10;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.topbar h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.topbar h1 span { color: var(--accent); }
+.topbar-right { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+#bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px; height: var(--nav-h);
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; z-index: 200;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 3px; background: none; border: none;
+  color: var(--muted); font-size: 10px; font-weight: 600;
+  font-family: inherit; cursor: pointer; letter-spacing: 0.3px;
+}
+.nav-btn svg { width: 21px; height: 21px; }
+.nav-btn.active { color: var(--accent2); }
+
+/* BUTTONS */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 15px 20px; border-radius: 12px; border: none;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; width: 100%;
+}
+.btn:active { opacity: 0.8; transform: scale(0.98); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-danger  { background: var(--danger);  color: #fff; }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+
+/* INPUTS */
+input, textarea {
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 10px; color: var(--text); font-family: inherit;
+  font-size: 15px; padding: 13px 14px; width: 100%; outline: none;
+}
+input:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: none; min-height: 72px; }
+.field-label {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.4px;
+  display: block; margin-bottom: 6px;
+}
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+
+/* BANNERS */
+.banner {
+  margin: 12px 16px 0; border-radius: 12px; padding: 14px;
+  font-size: 13px; line-height: 1.5;
+}
+.banner-warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: var(--warning); }
+.banner-danger  { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.3);  color: var(--danger);  }
+.banner b { display: block; font-size: 14px; margin-bottom: 4px; }
+
+/* FLEX UTILS */
+.row { display: flex; gap: 8px; }
+.row .btn { flex: 1; }
+.pad { padding: 16px; }
+
+/* ═══════════════════════════════
+   HOME SCREEN
+═══════════════════════════════ */
+.home-header { padding: 20px 20px 8px; }
+.home-header h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+.home-header p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+.route-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; margin: 0 16px 12px;
+  cursor: pointer;
+}
+.route-card:active { border-color: var(--accent); }
+.route-icon {
+  width: 44px; height: 44px; background: rgba(79,110,247,0.15);
+  border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 20px; flex-shrink: 0;
+}
+.route-info { flex: 1; min-width: 0; }
+.route-name { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.route-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.empty-state {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 48px 24px; text-align: center; gap: 10px;
+}
+.empty-icon { font-size: 48px; margin-bottom: 8px; }
+.empty-state h3 { font-size: 18px; font-weight: 700; }
+.empty-state p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+/* ═══════════════════════════════
+   RECORD SCREEN
+═══════════════════════════════ */
+.rec-card { margin: 16px; }
+.rec-live {
+  display: none; align-items: center;
+}
+.rec-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: var(--danger);
+  animation: blink 1.2s infinite; margin-right: 6px;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.rec-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.rec-count { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-top: 2px; }
+
+.stop-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.stop-row:last-child { border-bottom: none; }
+.stop-badge {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+}
+.stop-title { font-weight: 600; font-size: 14px; }
+.stop-note  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.stop-gps   { font-size: 11px; color: var(--border); margin-top: 1px; font-family: monospace; }
+
+/* ═══════════════════════════════
+   NAVIGATE SCREEN
+═══════════════════════════════ */
+.nav-hero {
+  margin: 16px;
+  background: linear-gradient(135deg, rgba(79,110,247,0.12), rgba(123,147,255,0.05));
+  border: 1.5px solid rgba(79,110,247,0.25);
+  border-radius: 16px; padding: 18px;
+}
+.nav-hero-name { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.nav-hero-meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.progress-bar { height: 5px; background: var(--border); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s; }
+
+.stop-nav-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+}
+.stop-nav-row:last-child { border-bottom: none; }
+.stop-nav-row.is-done .stop-badge { background: var(--border); }
+.stop-nav-row.is-done .stop-title { color: var(--muted); text-decoration: line-through; }
+.stop-nav-row.is-active .stop-badge { background: var(--accent); box-shadow: 0 0 0 4px rgba(79,110,247,0.25); }
+.stop-nav-row.is-upcoming .stop-badge { background: var(--surface2); color: var(--muted); border: 1.5px solid var(--border); }
+
+.done-btn {
+  background: var(--success); color: #fff; border: none;
+  border-radius: 8px; padding: 7px 12px;
+  font-size: 12px; font-weight: 700; font-family: inherit;
+  cursor: pointer; flex-shrink: 0;
+}
+
+.route-option {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; margin-bottom: 8px; cursor: pointer;
+}
+.route-option:active { border-color: var(--accent); }
+.route-option-name { font-weight: 700; font-size: 15px; }
+.route-option-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* ═══════════════════════════════
+   ABOUT SCREEN
+═══════════════════════════════ */
+.about-body {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 28px; text-align: center;
+}
+.about-emoji  { font-size: 52px; margin-bottom: 14px; }
+.about-name   { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+.about-tag    { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.about-line   { width: 56px; height: 1px; background: var(--border); margin: 28px auto; }
+.about-of     { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.about-net    { font-size: 17px; font-weight: 700; margin-bottom: 26px; }
+.about-quote  { font-size: 15px; color: var(--purple); font-style: italic; line-height: 1.8; margin-bottom: 18px; }
+.about-sacred { font-size: 10px; color: var(--purple-faint); letter-spacing: 2.5px; text-transform: uppercase; }
+
+/* ═══════════════════════════════
+   MODAL
+═══════════════════════════════ */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); z-index: 400;
+  align-items: flex-end; justify-content: center;
+}
+.overlay.open { display: flex; }
+.modal-sheet {
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  padding: 20px 20px 36px;
+  width: 100%; max-width: 480px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.modal-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 0 auto 6px;
+}
+.modal-title { font-size: 18px; font-weight: 700; }
 </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- ═══════════ HOME ═══════════ -->
   <div class="screen active" id="screen-home">
-    <div class="topbar"><h1>re<span>Router</span></h1><span class="topbar-sub" id="home-route-count">0 routes</span></div>
-    <div class="home-header"><h2>Your Routes</h2><p>Track once. Drive forever.</p></div>
-    <div id="routes-list"></div>
-    <div class="section-pad"><button class="btn btn-primary" onclick="goTo('record');startRecordScreen()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Record New Route</button></div>
+    <div class="topbar">
+      <h1>re<span>Router</span></h1>
+      <span class="topbar-right" id="home-count">0 routes</span>
+    </div>
+    <div class="home-header">
+      <h2>Your Routes</h2>
+      <p>Track once. Drive forever.</p>
+    </div>
+    <div id="home-list"></div>
+    <div class="pad">
+      <button class="btn btn-primary" onclick="showRecord()">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>
+        Record New Route
+      </button>
+    </div>
   </div>
+
+  <!-- ═══════════ RECORD ═══════════ -->
   <div class="screen" id="screen-record">
-    <div class="topbar"><h1>re<span>Router</span></h1><span class="topbar-sub" id="rec-status-label">Ready</span></div>
-    <div id="perm-banner"><b>📍 Location permission needed</b>Open your browser settings and allow location access for this site, then tap Start again.</div>
-    <div class="rec-status">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div><div class="rec-label" id="rec-mode-label">Not recording</div><div class="rec-value" id="rec-stop-count">0 stops</div></div>
-        <div id="rec-live-indicator" style="display:none;align-items:center"><span class="rec-live-dot"></span><span style="font-size:13px;font-weight:700;color:var(--danger)">LIVE</span></div>
-      </div>
-      <div class="flex-row" id="rec-controls"><button class="btn btn-primary" onclick="startRecording()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Recording</button></div>
+    <div class="topbar">
+      <h1>re<span>Router</span></h1>
+      <span class="topbar-right" id="rec-status">Ready</span>
     </div>
-    <div id="mark-stop-section" style="display:none;padding:0 16px 8px"><button class="btn btn-outline" onclick="openMarkStop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>Mark Stop Here</button></div>
-    <div class="stops-list" id="rec-stops-list"></div>
-    <div style="padding:16px;display:none" id="save-route-section">
-      <div style="margin-bottom:10px"><label>Route Name</label><input type="text" id="route-name-input" placeholder="e.g. Morning Delivery Route"></div>
-      <button class="btn btn-success" onclick="saveRoute()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save Route</button>
-    </div>
-  </div>
-  <div class="screen" id="screen-navigate">
-    <div class="topbar"><h1>re<span>Router</span></h1><span class="topbar-sub" id="nav-route-name">–</span></div>
-    <div id="nav-content">
-      <div id="nav-selector" style="padding:16px">
-        <p style="color:var(--muted);font-size:14px;margin-bottom:14px">Choose a route to navigate:</p>
-        <div id="nav-route-options"></div>
-        <div class="empty-state" id="nav-empty" style="display:none"><div class="empty-icon">🗺️</div><h3>No routes yet</h3><p>Record a route first, then come back to navigate it.</p></div>
+
+    <!-- Draft resume banner -->
+    <div class="banner banner-warning" id="draft-banner" style="display:none">
+      <b>📋 Unfinished session found</b>
+      <span id="draft-desc">You have stops from a previous session.</span>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-outline" style="padding:10px;font-size:13px;border-radius:9px" onclick="draftDiscard()">Discard</button>
+        <button class="btn btn-primary" style="padding:10px;font-size:13px;border-radius:9px" onclick="draftResume()">Resume</button>
       </div>
-      <div id="nav-active" style="display:none;flex-direction:column;flex:1">
-        <div class="nav-progress">
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600;color:var(--muted)">PROGRESS</span><span id="nav-progress-text" style="font-size:13px;font-weight:700">0 / 0</span></div>
-          <div class="progress-bar"><div class="progress-fill" id="nav-progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- GPS blocked banner -->
+    <div class="banner banner-danger" id="perm-banner" style="display:none">
+      <b>📍 Location access blocked</b>
+      Allow location in your browser settings, then tap Try Again.
+    </div>
+
+    <!-- Recording status card -->
+    <div class="pad" style="padding-bottom:0">
+      <div class="card rec-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div>
+            <div class="rec-label" id="rec-mode">Not recording</div>
+            <div class="rec-count" id="rec-count">0 stops</div>
+          </div>
+          <div class="rec-live" id="rec-live">
+            <div class="rec-dot"></div>
+            <span style="font-size:13px;font-weight:700;color:var(--danger)">LIVE</span>
+          </div>
         </div>
-        <div id="nav-stop-display"></div>
-        <div class="nav-actions" id="nav-action-btns"></div>
-        <div class="upcoming-list" id="nav-upcoming-list"></div>
+        <div id="rec-btns">
+          <button class="btn btn-primary" onclick="recStart()">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>
+            Start Recording
+          </button>
+        </div>
       </div>
-      <div class="done-state" id="nav-done" style="display:none"><div class="done-icon">🎉</div><h3>Route Complete!</h3><p>All stops visited.</p><div style="margin-top:20px;width:100%;padding:0 20px"><button class="btn btn-primary" onclick="resetNav()">Back to Routes</button></div></div>
+    </div>
+
+    <!-- Mark stop button (shown while recording) -->
+    <div class="pad" id="mark-btn-wrap" style="display:none;padding-top:10px">
+      <button class="btn btn-outline" onclick="openMarkModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+          <circle cx="12" cy="9" r="2.5"/>
+        </svg>
+        Mark Stop Here
+      </button>
+    </div>
+
+    <!-- Recorded stops list -->
+    <div id="rec-list" style="padding:0 16px"></div>
+
+    <!-- Save section (shown after stop recording) -->
+    <div class="pad" id="save-wrap" style="display:none">
+      <div style="margin-bottom:10px">
+        <label class="field-label">Route Name</label>
+        <input type="text" id="route-name" placeholder="e.g. Morning Delivery Route">
+      </div>
+      <button class="btn btn-success" onclick="recSave()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Save Route
+      </button>
     </div>
   </div>
+
+  <!-- ═══════════ NAVIGATE ═══════════ -->
+  <div class="screen" id="screen-navigate">
+    <div class="topbar">
+      <h1>re<span>Router</span></h1>
+      <span class="topbar-right" id="nav-status">Select route</span>
+    </div>
+
+    <!-- Route picker -->
+    <div id="nav-picker">
+      <div class="pad" style="padding-bottom:0">
+        <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Choose a route:</p>
+        <div id="nav-options"></div>
+      </div>
+      <div class="empty-state" id="nav-empty" style="display:none">
+        <div class="empty-icon">🗺️</div>
+        <h3>No routes yet</h3>
+        <p>Record a route first, then come back to navigate it.</p>
+      </div>
+    </div>
+
+    <!-- Active navigation -->
+    <div id="nav-active" style="display:none;flex-direction:column">
+      <div class="nav-hero">
+        <div class="nav-hero-name" id="nav-route-name">–</div>
+        <div class="nav-hero-meta" id="nav-route-meta">–</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="nav-progress" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="pad" style="padding-top:0;padding-bottom:8px">
+        <a id="maps-btn-link" href="#" target="_blank" style="text-decoration:none;display:block">
+          <button class="btn btn-primary" style="width:100%">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+              <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+            </svg>
+            Open Full Route in Maps
+          </button>
+        </a>
+      </div>
+
+      <div id="nav-stops-wrap" style="padding:0 16px">
+        <div class="field-label" style="padding:4px 0 8px">Stops</div>
+        <div id="nav-stops"></div>
+      </div>
+
+      <div class="pad" style="padding-top:8px">
+        <button class="btn btn-outline" onclick="navReset()">← Back to Routes</button>
+      </div>
+    </div>
+
+    <!-- Completed state -->
+    <div class="empty-state" id="nav-done" style="display:none">
+      <div class="empty-icon">🎉</div>
+      <h3>Route Complete!</h3>
+      <p>All stops delivered.</p>
+      <div style="margin-top:20px;width:100%">
+        <button class="btn btn-primary" onclick="navReset()">Back to Routes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ABOUT ═══════════ -->
+  <div class="screen" id="screen-about">
+    <div class="topbar"><h1>re<span>Router</span></h1></div>
+    <div class="about-body">
+      <div class="about-emoji">🛣️</div>
+      <div class="about-name">reRouter</div>
+      <div class="about-tag">Track once. Drive forever.</div>
+      <div class="about-line"></div>
+      <div class="about-of">a product of the</div>
+      <div class="about-net">Between Extremes Network</div>
+      <div class="about-quote">
+        They say diamonds are forever<br>
+        I say diamonds are for everyone
+      </div>
+      <div class="about-sacred">Sacred as Becoming</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ BOTTOM NAV ═══════════ -->
   <nav id="bottom-nav">
-    <button class="nav-btn active" id="nav-home" onclick="goTo('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Routes</button>
-    <button class="nav-btn" id="nav-record" onclick="goTo('record');startRecordScreen()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></svg>Record</button>
-    <button class="nav-btn" id="nav-navigate" onclick="goTo('navigate');loadNavScreen()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>Navigate</button>
+    <button class="nav-btn" id="nb-about" onclick="showScreen('about')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      About
+    </button>
+    <button class="nav-btn active" id="nb-home" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Routes
+    </button>
+    <button class="nav-btn" id="nb-record" onclick="showRecord()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"/>
+        <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>
+      </svg>
+      Record
+    </button>
+    <button class="nav-btn" id="nb-navigate" onclick="showNavigate()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+      </svg>
+      Navigate
+    </button>
   </nav>
+
 </div>
-<div class="modal-overlay" id="mark-stop-modal">
-  <div class="modal">
+
+<!-- ═══════════ MARK STOP MODAL ═══════════ -->
+<div class="overlay" id="modal-mark">
+  <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <h3>📍 Mark Stop</h3>
-    <div><label>Store / Place Name</label><input type="text" id="stop-name-input" placeholder="e.g. Pick n Pay Sommerschield"></div>
-    <div><label>Notes (optional)</label><textarea id="stop-note-input" placeholder="e.g. Park at the back, collect from cashier 2"></textarea></div>
-    <div class="flex-row" style="margin-top:8px">
-      <button class="btn btn-outline" onclick="closeMarkStop()">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmMarkStop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Add Stop</button>
+    <div class="modal-title">📍 Mark Stop</div>
+    <div>
+      <label class="field-label">Store / Place Name</label>
+      <input type="text" id="modal-stop-name" placeholder="e.g. Pick n Pay Sommerschield">
+    </div>
+    <div>
+      <label class="field-label">Driver Notes (optional)</label>
+      <textarea id="modal-stop-note" placeholder="e.g. Park at back, collect from cashier 2"></textarea>
+    </div>
+    <div class="row">
+      <button class="btn btn-outline" onclick="closeMarkModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="markStopConfirm()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Add Stop
+      </button>
     </div>
   </div>
 </div>
+
 <script>
-let routes=JSON.parse(localStorage.getItem('rerouter_routes')||'[]');
-let recording=false,currentRecordStops=[],currentPosition=null,watchId=null,activeRoute=null,currentStopIndex=0;
+'use strict';
 
-function requestLocationPermission(){
-  if(!navigator.geolocation)return;
-  navigator.geolocation.getCurrentPosition(
-    pos=>{currentPosition={lat:pos.coords.latitude,lng:pos.coords.longitude}},
-    err=>{},
-    {enableHighAccuracy:true,timeout:10000,maximumAge:60000}
-  );
+// ─── STATE ───────────────────────────────────────────────
+var routes         = [];
+var recording      = false;
+var recStops       = [];
+var gpsPos         = null;
+var gpsWatchId     = null;
+var activeRoute    = null;
+var doneCount      = 0;
+
+// ─── STORAGE ─────────────────────────────────────────────
+function storeSave() {
+  try { localStorage.setItem('rr_routes', JSON.stringify(routes)); } catch(e) {}
+}
+function storeLoad() {
+  try { var d = localStorage.getItem('rr_routes'); if (d) routes = JSON.parse(d); } catch(e) {}
+}
+function draftSave() {
+  if (!recStops.length) return;
+  try { localStorage.setItem('rr_draft', JSON.stringify({ stops: recStops, ts: Date.now() })); } catch(e) {}
+}
+function draftLoad() {
+  try { var d = localStorage.getItem('rr_draft'); return d ? JSON.parse(d) : null; } catch(e) { return null; }
+}
+function draftClear() {
+  try { localStorage.removeItem('rr_draft'); } catch(e) {}
 }
 
-function goTo(screen){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('screen-'+screen).classList.add('active');
-  document.getElementById('nav-'+screen).classList.add('active');
+// ─── SCREEN NAVIGATION ───────────────────────────────────
+function showScreen(name) {
+  var screens = ['home','record','navigate','about'];
+  screens.forEach(function(s) {
+    document.getElementById('screen-' + s).classList.toggle('active', s === name);
+    document.getElementById('nb-' + s).classList.toggle('active', s === name);
+  });
 }
 
-function renderHome(){
-  const list=document.getElementById('routes-list');
-  document.getElementById('home-route-count').textContent=routes.length+' route'+(routes.length!==1?'s':'');
-  if(!routes.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">🛣️</div><h3>No routes recorded</h3><p>Hit Record to track your first route.</p></div>';return;}
-  list.innerHTML=routes.map((r,i)=>`<div class="route-card" onclick="selectRouteToNav(${i})"><div class="route-icon">🗺️</div><div class="route-info"><div class="route-name">${r.name}</div><div class="route-meta">${r.stops.length} stop${r.stops.length!==1?'s':''} · ${formatDate(r.createdAt)}</div></div><svg class="route-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="9 18 15 12 9 6"/></svg></div>`).join('');
+function showRecord() {
+  showScreen('record');
+  recInit();
 }
 
-function selectRouteToNav(i){activeRoute=routes[i];currentStopIndex=0;goTo('navigate');loadNavScreen();}
-function formatDate(ts){if(!ts)return'';return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
-
-function startRecordScreen(){
-  if(recording)return;
-  currentRecordStops=[];renderRecordStops();
-  document.getElementById('rec-stop-count').textContent='0 stops';
-  document.getElementById('rec-mode-label').textContent='Not recording';
-  document.getElementById('rec-live-indicator').style.display='none';
-  document.getElementById('mark-stop-section').style.display='none';
-  document.getElementById('save-route-section').style.display='none';
-  document.getElementById('rec-status-label').textContent='Ready';
-  document.getElementById('perm-banner').style.display='none';
-  document.getElementById('rec-controls').innerHTML='<button class="btn btn-primary" onclick="startRecording()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Recording</button>';
+function showNavigate() {
+  showScreen('navigate');
+  navInit();
 }
 
-function startRecording(){
-  if(!navigator.geolocation){alert('Geolocation not supported.');return;}
-  recording=true;
-  document.getElementById('rec-mode-label').textContent='Getting GPS...';
-  document.getElementById('rec-status-label').textContent='Locating...';
-  document.getElementById('rec-controls').innerHTML='<button class="btn btn-danger" onclick="stopRecording()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Stop Recording</button>';
-  watchId=navigator.geolocation.watchPosition(
-    pos=>{
-      currentPosition={lat:pos.coords.latitude,lng:pos.coords.longitude};
-      document.getElementById('rec-status-label').textContent='GPS locked ✓';
-      document.getElementById('rec-mode-label').textContent='Recording route';
-      document.getElementById('rec-live-indicator').style.display='flex';
-      document.getElementById('mark-stop-section').style.display='block';
-      document.getElementById('perm-banner').style.display='none';
-    },
-    err=>{
-      recording=false;
-      if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null;}
-      document.getElementById('rec-live-indicator').style.display='none';
-      document.getElementById('mark-stop-section').style.display='none';
-      let msg='GPS failed',banner=false;
-      if(err.code===1){msg='Location blocked';banner=true;}
-      else if(err.code===2)msg='No GPS signal';
-      else if(err.code===3)msg='GPS timed out';
-      document.getElementById('rec-status-label').textContent=msg;
-      document.getElementById('rec-mode-label').textContent='Not recording';
-      document.getElementById('perm-banner').style.display=banner?'block':'none';
-      document.getElementById('rec-controls').innerHTML='<button class="btn btn-primary" onclick="startRecording()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Try Again</button>';
-    },
-    {enableHighAccuracy:true,maximumAge:3000,timeout:15000}
-  );
-}
-
-function stopRecording(){
-  recording=false;
-  if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null;}
-  document.getElementById('rec-live-indicator').style.display='none';
-  document.getElementById('mark-stop-section').style.display='none';
-  document.getElementById('rec-status-label').textContent='Done';
-  document.getElementById('rec-mode-label').textContent='Recording stopped';
-  if(!currentRecordStops.length){
-    document.getElementById('rec-controls').innerHTML='<button class="btn btn-primary" onclick="startRecording()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Again</button>';
+// ─── HOME ─────────────────────────────────────────────────
+function homeRender() {
+  var n = routes.length;
+  document.getElementById('home-count').textContent = n + ' route' + (n !== 1 ? 's' : '');
+  var el = document.getElementById('home-list');
+  if (!n) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🛣️</div><h3>No routes yet</h3><p>Hit Record to track your first delivery route.</p></div>';
     return;
   }
-  document.getElementById('save-route-section').style.display='block';
-  document.getElementById('rec-controls').innerHTML='<button class="btn btn-outline" onclick="startRecordScreen()">Discard</button>';
+  el.innerHTML = routes.map(function(r, i) {
+    return '<div class="route-card" onclick="navLoadRoute(' + i + ')">' +
+      '<div class="route-icon">🗺️</div>' +
+      '<div class="route-info">' +
+        '<div class="route-name">' + esc(r.name) + '</div>' +
+        '<div class="route-meta">' + r.stops.length + ' stop' + (r.stops.length !== 1 ? 's' : '') + ' · ' + fmtDate(r.ts) + '</div>' +
+      '</div>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--muted);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>' +
+    '</div>';
+  }).join('');
 }
 
-function openMarkStop(){
-  document.getElementById('stop-name-input').value='';
-  document.getElementById('stop-note-input').value='';
-  document.getElementById('mark-stop-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('stop-name-input').focus(),100);
-}
-function closeMarkStop(){document.getElementById('mark-stop-modal').classList.remove('open');}
-function confirmMarkStop(){
-  const name=document.getElementById('stop-name-input').value.trim();
-  if(!name){document.getElementById('stop-name-input').focus();return;}
-  const note=document.getElementById('stop-note-input').value.trim();
-  const pos=currentPosition||{lat:null,lng:null};
-  currentRecordStops.push({name,note,lat:pos.lat,lng:pos.lng});
-  closeMarkStop();
-  document.getElementById('rec-stop-count').textContent=currentRecordStops.length+' stop'+(currentRecordStops.length!==1?'s':'');
-  renderRecordStops();
-}
+// ─── RECORD ──────────────────────────────────────────────
+function recInit() {
+  if (recording) return;
 
-function renderRecordStops(){
-  const list=document.getElementById('rec-stops-list');
-  if(!currentRecordStops.length){list.innerHTML='';return;}
-  list.innerHTML='<div class="card" style="margin-top:4px"><div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Recorded Stops</div>'+currentRecordStops.map((s,i)=>`<div class="stop-item"><div class="stop-num">${i+1}</div><div class="stop-details"><div class="stop-name">${s.name}</div>${s.note?`<div class="stop-note">${s.note}</div>`:''} ${s.lat?`<div class="stop-coords">${s.lat.toFixed(5)}, ${s.lng.toFixed(5)}</div>`:'<div class="stop-coords">No GPS fix</div>'}</div></div>`).join('')+'</div>';
-}
+  // Check for draft
+  var draft = draftLoad();
+  var db = document.getElementById('draft-banner');
+  if (draft && draft.stops && draft.stops.length > 0) {
+    var mins = Math.round((Date.now() - draft.ts) / 60000);
+    document.getElementById('draft-desc').textContent =
+      draft.stops.length + ' stop' + (draft.stops.length !== 1 ? 's' : '') +
+      ' saved ' + (mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago') + '.';
+    db.style.display = 'block';
+  } else {
+    db.style.display = 'none';
+  }
 
-function saveRoute(){
-  const name=document.getElementById('route-name-input').value.trim();
-  if(!name){document.getElementById('route-name-input').focus();return;}
-  if(!currentRecordStops.length){alert('Add at least one stop first.');return;}
-  routes.unshift({id:Date.now(),name,stops:currentRecordStops,createdAt:Date.now()});
-  localStorage.setItem('rerouter_routes',JSON.stringify(routes));
-  renderHome();startRecordScreen();goTo('home');
-}
-
-function loadNavScreen(){
-  const sel=document.getElementById('nav-selector'),act=document.getElementById('nav-active'),done=document.getElementById('nav-done');
-  if(activeRoute){sel.style.display='none';done.style.display='none';act.style.display='flex';renderNavActive();return;}
-  act.style.display='none';done.style.display='none';sel.style.display='block';
-  const opts=document.getElementById('nav-route-options'),empty=document.getElementById('nav-empty');
-  if(!routes.length){opts.innerHTML='';empty.style.display='flex';return;}
-  empty.style.display='none';
-  opts.innerHTML=routes.map((r,i)=>`<div class="route-select-item" onclick="startNav(${i})"><div class="route-select-name">${r.name}</div><div class="route-select-meta">${r.stops.length} stop${r.stops.length!==1?'s':''} · ${formatDate(r.createdAt)}</div></div>`).join('');
+  recStops = [];
+  gpsPos = null;
+  recRender();
+  document.getElementById('rec-status').textContent = 'Ready';
+  document.getElementById('rec-mode').textContent = 'Not recording';
+  document.getElementById('rec-count').textContent = '0 stops';
+  document.getElementById('rec-live').style.display = 'none';
+  document.getElementById('mark-btn-wrap').style.display = 'none';
+  document.getElementById('save-wrap').style.display = 'none';
+  document.getElementById('perm-banner').style.display = 'none';
+  document.getElementById('rec-list').innerHTML = '';
+  document.getElementById('rec-btns').innerHTML =
+    '<button class="btn btn-primary" onclick="recStart()">' +
+      '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>' +
+      'Start Recording' +
+    '</button>';
 }
 
-function startNav(i){activeRoute=routes[i];currentStopIndex=0;document.getElementById('nav-selector').style.display='none';document.getElementById('nav-active').style.display='flex';renderNavActive();}
-
-function renderNavActive(){
-  if(!activeRoute)return;
-  const stops=activeRoute.stops,total=stops.length;
-  document.getElementById('nav-route-name').textContent=activeRoute.name;
-  document.getElementById('nav-progress-text').textContent=currentStopIndex+' / '+total;
-  document.getElementById('nav-progress-fill').style.width=(total>0?(currentStopIndex/total)*100:0)+'%';
-  if(currentStopIndex>=total){document.getElementById('nav-active').style.display='none';document.getElementById('nav-done').style.display='flex';return;}
-  const stop=stops[currentStopIndex],remaining=stops.slice(currentStopIndex+1);
-  const mapsUrl=stop.lat?`https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.name)}`;
-  document.getElementById('nav-stop-display').innerHTML=`<div class="current-stop-card"><div class="current-stop-label">Stop ${currentStopIndex+1} of ${total}</div><div class="current-stop-name">${stop.name}</div>${stop.note?`<div class="current-stop-note">💬 ${stop.note}</div>`:''}<div class="current-stop-num">${remaining.length>0?remaining.length+' stop'+(remaining.length!==1?'s':'')+' after this':'Last stop'}</div></div>`;
-  document.getElementById('nav-action-btns').innerHTML=`<a href="${mapsUrl}" target="_blank" style="text-decoration:none;display:block"><button class="btn btn-primary" style="width:100%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>Take Me Here</button></a><button class="btn btn-success" onclick="nextStop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>Done · Next Stop</button><button class="btn btn-outline btn-sm" style="width:auto;align-self:center" onclick="resetNav()">End Route</button>`;
-  document.getElementById('nav-upcoming-list').innerHTML=remaining.length?'<div class="upcoming-title">Coming up</div>'+remaining.map((s,i)=>`<div class="upcoming-item"><div class="upcoming-dot"></div><div style="font-size:14px;font-weight:600">${currentStopIndex+2+i}. ${s.name}</div></div>`).join(''):'';
+function draftResume() {
+  var draft = draftLoad();
+  if (!draft) return;
+  recStops = draft.stops;
+  document.getElementById('draft-banner').style.display = 'none';
+  recRender();
+  recUpdateCount();
+  recStart();
 }
 
-function nextStop(){currentStopIndex++;renderNavActive();}
-function resetNav(){activeRoute=null;currentStopIndex=0;document.getElementById('nav-done').style.display='none';document.getElementById('nav-active').style.display='none';document.getElementById('nav-route-name').textContent='–';goTo('home');}
+function draftDiscard() {
+  draftClear();
+  recStops = [];
+  document.getElementById('draft-banner').style.display = 'none';
+  recRender();
+  recUpdateCount();
+}
 
-renderHome();
-requestLocationPermission();
+function recStart() {
+  if (!navigator.geolocation) { alert('Geolocation not supported by this browser.'); return; }
+  recording = true;
+  document.getElementById('perm-banner').style.display = 'none';
+  document.getElementById('rec-mode').textContent = 'Getting GPS…';
+  document.getElementById('rec-status').textContent = 'Locating…';
+  document.getElementById('rec-btns').innerHTML =
+    '<button class="btn btn-danger" onclick="recStop()">' +
+      '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>' +
+      'Stop Recording' +
+    '</button>';
+
+  gpsWatchId = navigator.geolocation.watchPosition(
+    function(pos) {
+      gpsPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      document.getElementById('rec-status').textContent = 'GPS ✓';
+      document.getElementById('rec-mode').textContent = 'Recording';
+      document.getElementById('rec-live').style.display = 'flex';
+      document.getElementById('mark-btn-wrap').style.display = 'block';
+    },
+    function(err) {
+      recording = false;
+      if (gpsWatchId !== null) { navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
+      document.getElementById('rec-live').style.display = 'none';
+      document.getElementById('mark-btn-wrap').style.display = 'none';
+      var msg = 'GPS failed';
+      if (err.code === 1) { msg = 'Location blocked'; document.getElementById('perm-banner').style.display = 'block'; }
+      else if (err.code === 2) msg = 'No GPS signal';
+      else if (err.code === 3) msg = 'GPS timed out';
+      document.getElementById('rec-status').textContent = msg;
+      document.getElementById('rec-mode').textContent = 'Not recording';
+      document.getElementById('rec-btns').innerHTML =
+        '<button class="btn btn-primary" onclick="recStart()">' +
+          '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>' +
+          'Try Again' +
+        '</button>';
+    },
+    { enableHighAccuracy: true, maximumAge: 3000, timeout: 15000 }
+  );
+}
+
+function recStop() {
+  recording = false;
+  if (gpsWatchId !== null) { navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
+  document.getElementById('rec-live').style.display = 'none';
+  document.getElementById('mark-btn-wrap').style.display = 'none';
+  document.getElementById('rec-status').textContent = 'Stopped';
+  document.getElementById('rec-mode').textContent = 'Recording stopped';
+  if (!recStops.length) {
+    draftClear();
+    document.getElementById('rec-btns').innerHTML =
+      '<button class="btn btn-primary" onclick="recStart()">' +
+        '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>' +
+        'Start Again' +
+      '</button>';
+    return;
+  }
+  document.getElementById('save-wrap').style.display = 'block';
+  document.getElementById('rec-btns').innerHTML =
+    '<button class="btn btn-outline" onclick="recDiscard()">Discard</button>';
+}
+
+function recDiscard() {
+  draftClear();
+  recInit();
+}
+
+function recSave() {
+  var name = document.getElementById('route-name').value.trim();
+  if (!name) { document.getElementById('route-name').focus(); return; }
+  if (!recStops.length) { alert('Add at least one stop first.'); return; }
+  routes.unshift({ name: name, stops: recStops, ts: Date.now() });
+  storeSave();
+  draftClear();
+  homeRender();
+  recStops = [];
+  showScreen('home');
+}
+
+function recUpdateCount() {
+  var n = recStops.length;
+  document.getElementById('rec-count').textContent = n + ' stop' + (n !== 1 ? 's' : '');
+}
+
+function recRender() {
+  var el = document.getElementById('rec-list');
+  if (!recStops.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="card" style="margin-top:4px">' +
+    '<div class="field-label" style="margin-bottom:10px">Recorded Stops</div>' +
+    recStops.map(function(s, i) {
+      return '<div class="stop-row">' +
+        '<div class="stop-badge">' + (i+1) + '</div>' +
+        '<div>' +
+          '<div class="stop-title">' + esc(s.name) + '</div>' +
+          (s.note ? '<div class="stop-note">' + esc(s.note) + '</div>' : '') +
+          (s.lat ? '<div class="stop-gps">' + s.lat.toFixed(5) + ', ' + s.lng.toFixed(5) + '</div>' : '<div class="stop-gps">No GPS fix</div>') +
+        '</div>' +
+      '</div>';
+    }).join('') +
+  '</div>';
+}
+
+// ─── MARK STOP MODAL ─────────────────────────────────────
+function openMarkModal() {
+  document.getElementById('modal-stop-name').value = '';
+  document.getElementById('modal-stop-note').value = '';
+  document.getElementById('modal-mark').classList.add('open');
+  setTimeout(function() { document.getElementById('modal-stop-name').focus(); }, 120);
+}
+
+function closeMarkModal() {
+  document.getElementById('modal-mark').classList.remove('open');
+}
+
+function markStopConfirm() {
+  var name = document.getElementById('modal-stop-name').value.trim();
+  if (!name) { document.getElementById('modal-stop-name').focus(); return; }
+  var note = document.getElementById('modal-stop-note').value.trim();
+  recStops.push({
+    name: name,
+    note: note,
+    lat: gpsPos ? gpsPos.lat : null,
+    lng: gpsPos ? gpsPos.lng : null
+  });
+  draftSave();
+  closeMarkModal();
+  recUpdateCount();
+  recRender();
+}
+
+// ─── NAVIGATE ────────────────────────────────────────────
+function navInit() {
+  if (activeRoute) { navRenderActive(); return; }
+  document.getElementById('nav-active').style.display = 'none';
+  document.getElementById('nav-done').style.display = 'none';
+  document.getElementById('nav-picker').style.display = 'block';
+
+  var opts = document.getElementById('nav-options');
+  var empty = document.getElementById('nav-empty');
+
+  if (!routes.length) {
+    opts.innerHTML = '';
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+  opts.innerHTML = routes.map(function(r, i) {
+    return '<div class="route-option" onclick="navLoadRoute(' + i + ')">' +
+      '<div class="route-option-name">' + esc(r.name) + '</div>' +
+      '<div class="route-option-meta">' + r.stops.length + ' stop' + (r.stops.length !== 1 ? 's' : '') + ' · ' + fmtDate(r.ts) + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function navLoadRoute(i) {
+  activeRoute = routes[i];
+  doneCount = 0;
+  showScreen('navigate');
+  navRenderActive();
+}
+
+function navRenderActive() {
+  document.getElementById('nav-picker').style.display = 'none';
+  document.getElementById('nav-done').style.display = 'none';
+  document.getElementById('nav-active').style.display = 'flex';
+
+  var r = activeRoute;
+  var total = r.stops.length;
+  var done = doneCount;
+
+  document.getElementById('nav-status').textContent = r.name;
+  document.getElementById('nav-route-name').textContent = r.name;
+  document.getElementById('nav-route-meta').textContent = done + ' of ' + total + ' stops done';
+  document.getElementById('nav-progress').style.width = (total > 0 ? (done / total) * 100 : 0) + '%';
+
+  // Build Google Maps URL with remaining stops
+  var remaining = r.stops.slice(doneCount);
+  var mapsUrl = buildMapsUrl(remaining.length ? remaining : r.stops);
+  document.getElementById('maps-btn-link').href = mapsUrl;
+
+  // Render stop list
+  document.getElementById('nav-stops').innerHTML = r.stops.map(function(s, i) {
+    var cls = i < doneCount ? 'is-done' : i === doneCount ? 'is-active' : 'is-upcoming';
+    var numLabel = i < doneCount ? '✓' : (i + 1);
+    return '<div class="stop-nav-row ' + cls + '">' +
+      '<div class="stop-badge">' + numLabel + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="stop-title">' + esc(s.name) + '</div>' +
+        (s.note ? '<div class="stop-note">' + esc(s.note) + '</div>' : '') +
+      '</div>' +
+      (i === doneCount ? '<button class="done-btn" onclick="navMarkDone()">Done</button>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function navMarkDone() {
+  doneCount++;
+  if (doneCount >= activeRoute.stops.length) {
+    document.getElementById('nav-active').style.display = 'none';
+    document.getElementById('nav-done').style.display = 'flex';
+    return;
+  }
+  navRenderActive();
+}
+
+function navReset() {
+  activeRoute = null;
+  doneCount = 0;
+  document.getElementById('nav-active').style.display = 'none';
+  document.getElementById('nav-done').style.display = 'none';
+  document.getElementById('nav-status').textContent = 'Select route';
+  showScreen('home');
+}
+
+// ─── BUILD MAPS URL ───────────────────────────────────────
+function buildMapsUrl(stops) {
+  var parts = stops.map(function(s) {
+    return (s.lat !== null) ? s.lat + ',' + s.lng : encodeURIComponent(s.name);
+  });
+  return 'https://www.google.com/maps/dir/' + parts.join('/');
+}
+
+// ─── UTILS ───────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function fmtDate(ts) {
+  if (!ts) return '';
+  return new Date(ts).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+}
+
+// ─── INIT ────────────────────────────────────────────────
+storeLoad();
+homeRender();
+
+// Trigger location permission on load
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    function(p) { gpsPos = { lat: p.coords.latitude, lng: p.coords.longitude }; },
+    function() {},
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
+}
 </script>
 </body>
-  </html>
+</html>
