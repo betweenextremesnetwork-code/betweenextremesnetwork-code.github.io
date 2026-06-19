@@ -28,7 +28,7 @@ html, body { height:100%; background:var(--bg); color:var(--text); font-family:'
 .screen { display:none; flex-direction:column; flex:1; overflow-y:auto; padding-bottom:var(--nav-h); }
 .screen.active { display:flex; }
 
-.topbar { padding:14px 20px 12px; display:flex; align-items:center; justify-content:space-between; background:var(--bg); position:sticky; top:0; z-index:10; border-bottom:1px solid var(--border); flex-shrink:0; }
+.topbar { padding:14px 20px 12px; display:flex; align-items:center; justify-content:space-between; background:var(--bg); position:sticky; top:0; z-index:10; border-bottom:1px solid var(--border); }
 .topbar-left { display:flex; align-items:center; gap:10px; }
 .menu-btn { background:none; border:none; color:var(--text); cursor:pointer; padding:4px; display:flex; touch-action:manipulation; }
 .menu-btn svg { width:22px; height:22px; }
@@ -37,12 +37,12 @@ html, body { height:100%; background:var(--bg); color:var(--text); font-family:'
 .topbar-right { font-size:13px; color:var(--muted); font-weight:500; }
 .offline-badge { display:none; font-size:10px; background:var(--danger); color:#fff; padding:2px 6px; border-radius:4px; }
 
-#bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; height:var(--nav-h); background:var(--surface); border-top:1px solid var(--border); display:flex; z-index:200; }
-.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; background:none; border:none; color:var(--muted); font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; letter-spacing:0.3px; touch-action:manipulation; }
+#bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; height:var(--nav-h); background:var(--surface); border-top:1px solid var(--border); display:flex; z-index:100; }
+.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; background:none; border:none; color:var(--muted); font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; transition:color 0.2s; touch-action:manipulation; }
 .nav-btn svg { width:22px; height:22px; }
 .nav-btn.active { color:var(--accent2); }
 
-.btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 20px; border-radius:12px; border:none; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; width:100%; touch-action:manipulation; }
+.btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 20px; border-radius:12px; border:none; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; width:100%; }
 .btn:active { opacity:0.8; transform:scale(0.98); }
 .btn-primary { background:var(--accent); color:#fff; }
 .btn-success { background:var(--success); color:#fff; }
@@ -50,7 +50,7 @@ html, body { height:100%; background:var(--bg); color:var(--text); font-family:'
 .btn-outline { background:transparent; border:1.5px solid var(--border); color:var(--text); }
 .btn-sm { padding:8px 12px; font-size:12px; }
 
-input, textarea { background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-family:inherit; font-size:15px; padding:13px 14px; width:100%; outline:none; }
+input, textarea { background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-family:inherit; font-size:15px; padding:13px 14px; width:100%; outline:none; transition:border-color 0.2s; }
 input:focus, textarea:focus { border-color:var(--accent); }
 textarea { resize:none; min-height:72px; }
 .field-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; display:block; margin-bottom:6px; }
@@ -73,7 +73,7 @@ textarea { resize:none; min-height:72px; }
 .home-header { padding:20px 20px 8px; }
 .home-header h2 { font-size:26px; font-weight:800; letter-spacing:-0.5px; }
 .home-header p { color:var(--muted); font-size:14px; margin-top:4px; }
-.route-card { display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin:0 16px 12px; cursor:pointer; touch-action:manipulation; role:button; }
+.route-card { display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin:0 16px 12px; cursor:pointer; touch-action:manipulation; }
 .route-card:active { border-color:var(--accent); }
 .route-card-actions { display:none; gap:6px; }
 .route-card:hover .route-card-actions { display:flex; }
@@ -96,7 +96,7 @@ textarea { resize:none; min-height:72px; }
 .rec-accuracy { font-size:12px; color:var(--warning); margin-top:4px; }
 .stop-row { display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
 .stop-row:last-child { border-bottom:none; }
-.stop-badge { width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; margin-top:2px; }
+.stop-badge { width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; margin-top:1px; }
 .stop-title { font-weight:600; font-size:14px; }
 .stop-note { font-size:12px; color:var(--muted); margin-top:2px; }
 .stop-gps { font-size:11px; color:var(--border); margin-top:1px; font-family:monospace; }
@@ -109,7 +109,7 @@ textarea { resize:none; min-height:72px; }
 .progress-fill { height:100%; background:var(--accent); border-radius:3px; transition:width 0.4s; }
 
 .maps-parts { display:flex; flex-direction:column; gap:8px; }
-.maps-part-btn { display:flex; align-items:center; justify-content:space-between; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:13px 16px; text-decoration:none; cursor:pointer; touch-action:manipulation; }
+.maps-part-btn { display:flex; align-items:center; justify-content:space-between; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:13px 16px; text-decoration:none; color:var(--text); transition:border-color 0.2s; }
 .maps-part-btn:active { border-color:var(--accent); }
 .maps-part-label { font-size:14px; font-weight:700; }
 .maps-part-range { font-size:12px; color:var(--muted); margin-top:2px; }
@@ -132,9 +132,9 @@ textarea { resize:none; min-height:72px; }
 /* ABOUT MODAL (slide-over) */
 .about-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:500; }
 .about-overlay.open { display:block; }
-.about-panel { position:absolute; top:0; left:0; bottom:0; width:84%; max-width:340px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; transform:translateX(-100%); transition:transform 0.3s ease; }
+.about-panel { position:absolute; top:0; left:0; bottom:0; width:84%; max-width:340px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; transform:translateX(-100%); transition:transform 0.3s; z-index:510; }
 .about-overlay.open .about-panel { transform:translateX(0); }
-.about-close { position:absolute; top:14px; right:-44px; background:var(--surface); border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; touch-action:manipulation; }
+.about-close { position:absolute; top:14px; right:-44px; background:var(--surface); border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text); }
 .about-body { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 24px; text-align:center; }
 .about-emoji { font-size:48px; margin-bottom:14px; }
 .about-name { font-size:22px; font-weight:800; letter-spacing:-0.5px; }
@@ -145,7 +145,7 @@ textarea { resize:none; min-height:72px; }
 .about-quote { font-size:14px; color:var(--purple); font-style:italic; line-height:1.8; margin-bottom:16px; }
 .about-sacred { font-size:9px; color:var(--purple-faint); letter-spacing:2.2px; text-transform:uppercase; }
 .about-links { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
-.about-link-btn { padding:10px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--accent); text-decoration:none; font-size:13px; font-weight:600; cursor:pointer; touch-action:manipulation; }
+.about-link-btn { padding:10px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--accent); text-decoration:none; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
 
 /* MODAL */
 .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:400; align-items:flex-end; justify-content:center; }
@@ -167,6 +167,11 @@ textarea { resize:none; min-height:72px; }
 /* STATUS UPDATE */
 .status-spinner { display:inline-block; width:12px; height:12px; border:2px solid var(--accent); border-top-color:transparent; border-radius:50%; animation:spin 0.6s linear infinite; margin-right:6px; }
 @keyframes spin { to { transform:rotate(360deg); } }
+
+/* Toast notification */
+@keyframes slideUp { from { transform:translateY(100px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@keyframes slideDown { from { transform:translateY(0); opacity:1; } to { transform:translateY(100px); opacity:0; } }
+#toast-notification { animation:slideUp 0.3s ease !important; z-index:9999; }
 </style>
 </head>
 <body>
@@ -419,6 +424,10 @@ textarea { resize:none; min-height:72px; }
 
 <script>
 'use strict';
+
+// ─── UTILITY FUNCTIONS ───────────────────────────────────
+function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(ts) { var d = new Date(ts); return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }); }
 
 // ─── STATE ───────────────────────────────────────────────
 var routes = [];
@@ -678,7 +687,7 @@ function recInit() {
   document.getElementById('perm-banner').style.display = 'none';
   document.getElementById('accuracy-banner').style.display = 'none';
   document.getElementById('rec-list').innerHTML = '';
-  document.getElementById('rec-btns').innerHTML = getSVG('rec') + 'Start Recording</button>';
+  document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Recording</button>';
   document.getElementById('route-name').value = '';
 }
 
@@ -707,7 +716,7 @@ function recStart() {
   document.getElementById('accuracy-banner').style.display = 'none';
   document.getElementById('rec-mode').textContent = 'Getting GPS…';
   document.getElementById('rec-status').textContent = 'Locating…';
-  document.getElementById('rec-btns').innerHTML = '<button class="btn btn-danger" onclick="recStop()">' + getSVG('stop') + 'Stop Recording</button>';
+  document.getElementById('rec-btns').innerHTML = '<button class="btn btn-danger" onclick="recStop()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Stop Recording</button>';
 
   gpsWatchId = navigator.geolocation.watchPosition(
     function(pos) {
@@ -737,7 +746,7 @@ function recStart() {
       else if (err.code === 3) msg = 'GPS timed out';
       document.getElementById('rec-status').textContent = msg;
       document.getElementById('rec-mode').textContent = 'Not recording';
-      document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()">' + getSVG('rec') + 'Try Again</button>';
+      document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Try Again</button>';
     },
     { enableHighAccuracy: true, maximumAge: 3000, timeout: 30000 }
   );
@@ -752,7 +761,7 @@ function recStop() {
   document.getElementById('rec-mode').textContent = 'Recording stopped';
   if (!recStops.length) {
     draftClear();
-    document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()">' + getSVG('rec') + 'Start Again</button>';
+    document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Again</button>';
     return;
   }
   document.getElementById('save-wrap').style.display = 'block';
@@ -911,7 +920,7 @@ function renderMapsLaunchArea() {
     area.innerHTML =
       '<a href="' + url + '" target="_blank" style="text-decoration:none;display:block">' +
         '<button class="btn btn-primary" style="width:100%" aria-label="Open full route in Google Maps">' +
-          getSVG('maps') + 'Open Full Route in Maps' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>Open Full Route in Maps' +
         '</button>' +
       '</a>';
     return;
@@ -935,7 +944,7 @@ function renderMapsLaunchArea() {
         '<div class="maps-part-label">Part ' + (ci + 1) + '</div>' +
         '<div class="maps-part-range">Stops ' + startNum + '–' + endNum + '</div>' +
       '</div>' +
-      getSVG('maps-icon') +
+      '<svg class="maps-part-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>' +
     '</a>';
   });
 
@@ -972,17 +981,6 @@ function buildMapsUrl(stops) {
   return 'https://www.google.com/maps/dir/' + parts.join('/');
 }
 
-// ─── SVG HELPER (reduce duplication) ──────────────────────
-function getSVG(type) {
-  var svgs = {
-    'rec': '<button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>',
-    'stop': '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>',
-    'maps': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
-    'maps-icon': '<svg class="maps-part-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>'
-  };
-  return svgs[type] || '';
-}
-
 // ─── NOTIFICATIONS ───────────────────────────────────────
 function showNotification(msg) {
   var existing = document.getElementById('toast-notification');
@@ -990,7 +988,7 @@ function showNotification(msg) {
   
   var toast = document.createElement('div');
   toast.id = 'toast-notification';
-  toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);max-width:320px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-weight:600;z-index:600;animation:slideUp 0.3s ease;font-family:Inter,sans-serif';
+  toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);max-width:320px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-weight:600;z-index:9999;';
   toast.textContent = msg;
   document.body.appendChild(toast);
   
@@ -1000,96 +998,10 @@ function showNotification(msg) {
   }, 2500);
 }
 
-// ─── UTILS ───────────────────────────────────────────────
-function esc(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function fmtDate(ts) {
-  if (!ts) return '';
-  return new Date(ts).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-}
-
-// ─── PWA: MANIFEST + ICON ──────────────────────────────────
-function makeIcon(size) {
-  var c = document.createElement('canvas');
-  c.width = size; c.height = size;
-  var ctx = c.getContext('2d');
-  ctx.fillStyle = '#0A0A0F';
-  if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(0,0,size,size,size*0.22); ctx.fill(); }
-  else { ctx.fillRect(0,0,size,size); }
-  var cx = size/2, cy = size*0.42, r = size*0.27;
-  ctx.fillStyle = '#4F6EF7';
-  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(cx, cy + r + size*0.15);
-  ctx.lineTo(cx - size*0.1, cy + r - size*0.02);
-  ctx.lineTo(cx + size*0.1, cy + r - size*0.02);
-  ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#0A0A0F';
-  ctx.beginPath(); ctx.arc(cx, cy, r*0.38, 0, Math.PI*2); ctx.fill();
-  return c.toDataURL('image/png');
-}
-
-var pwaManifestCache = null;
-
-function setupPWA() {
-  if (pwaManifestCache) {
-    document.getElementById('manifest-link').href = pwaManifestCache;
-    return;
-  }
-  
-  try {
-    var icon192 = makeIcon(192);
-    var icon512 = makeIcon(512);
-
-    var appleLink = document.createElement('link');
-    appleLink.rel = 'apple-touch-icon';
-    appleLink.href = makeIcon(180);
-    document.head.appendChild(appleLink);
-
-    var manifest = {
-      name: 'reRouter',
-      short_name: 'reRouter',
-      description: 'Track once. Drive forever.',
-      start_url: '.',
-      display: 'standalone',
-      background_color: '#0A0A0F',
-      theme_color: '#0A0A0F',
-      orientation: 'portrait',
-      icons: [
-        { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-        { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
-      ]
-    };
-    var blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-    pwaManifestCache = URL.createObjectURL(blob);
-    document.getElementById('manifest-link').href = pwaManifestCache;
-  } catch (e) { console.error('PWA setup error:', e); }
-}
-
-// ─── INIT ────────────────────────────────────────────────
+// ─── INITIALIZATION ──────────────────────────────────────
 initDB();
 storeLoad();
 homeRender();
-setupPWA();
-updateNetworkStatus();
-
-// Add toast animation styles
-var style = document.createElement('style');
-style.textContent = '@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}@keyframes slideDown{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(20px)}}';
-document.head.appendChild(style);
-
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    function(p) {
-      gpsPos = { lat: p.coords.latitude, lng: p.coords.longitude };
-      gpsAccuracy = Math.round(p.coords.accuracy);
-    },
-    function() {},
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-  );
-}
 </script>
 </body>
 </html>
