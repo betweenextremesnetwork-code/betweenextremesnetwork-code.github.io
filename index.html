@@ -25,7 +25,166 @@ layout: none
 html, body { height:100%; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; overflow:hidden; }
 #app { height:100%; display:flex; flex-direction:column; max-width:480px; margin:0 auto; position:relative; }
 
-/* (styles truncated for brevity in this commit message) */
+.screen { display:none; flex-direction:column; flex:1; overflow-y:auto; padding-bottom:var(--nav-h); }
+.screen.active { display:flex; }
+
+.topbar { padding:14px 20px 12px; display:flex; align-items:center; justify-content:space-between; background:var(--bg); position:sticky; top:0; z-index:10; border-bottom:1px solid var(--border); }
+.topbar-left { display:flex; align-items:center; gap:10px; }
+.menu-btn { background:none; border:none; color:var(--text); cursor:pointer; padding:4px; display:flex; touch-action:manipulation; }
+.menu-btn svg { width:22px; height:22px; }
+.topbar h1 { font-size:21px; font-weight:800; letter-spacing:-0.5px; }
+.topbar h1 span { color:var(--accent); }
+.topbar-right { font-size:13px; color:var(--muted); font-weight:500; }
+.offline-badge { display:none; font-size:10px; background:var(--danger); color:#fff; padding:2px 6px; border-radius:4px; }
+
+#bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; height:var(--nav-h); background:var(--surface); border-top:1px solid var(--border); display:flex; gap:0; z-index:20; }
+.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; background:none; border:none; color:var(--muted); font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; touch-action:manipulation; }
+.nav-btn svg { width:22px; height:22px; }
+.nav-btn.active { color:var(--accent2); }
+
+.btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 20px; border-radius:12px; border:none; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.btn:active { opacity:0.8; transform:scale(0.98); }
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-success { background:var(--success); color:#fff; }
+.btn-danger { background:var(--danger); color:#fff; }
+.btn-outline { background:transparent; border:1.5px solid var(--border); color:var(--text); }
+.btn-sm { padding:8px 12px; font-size:12px; }
+
+input, textarea { background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-family:inherit; font-size:15px; padding:13px 14px; width:100%; outline:none; transition:border 0.2s; }
+input:focus, textarea:focus { border-color:var(--accent); }
+textarea { resize:none; min-height:72px; }
+.field-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; display:block; margin-bottom:6px; }
+
+.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; }
+
+.banner { margin:12px 16px 0; border-radius:12px; padding:14px; font-size:13px; line-height:1.5; }
+.banner-warning { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); color:var(--warning); }
+.banner-danger { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:var(--danger); }
+.banner-info { background:rgba(79,110,247,0.1); border:1px solid rgba(79,110,247,0.3); color:var(--accent); }
+.banner b { display:block; font-size:14px; margin-bottom:4px; }
+
+.row { display:flex; gap:8px; }
+.row .btn { flex:1; }
+.row-sm { gap:6px; }
+.row-sm .btn { padding:10px 12px; font-size:13px; }
+.pad { padding:16px; }
+
+/* HOME */
+.home-header { padding:20px 20px 8px; }
+.home-header h2 { font-size:26px; font-weight:800; letter-spacing:-0.5px; }
+.home-header p { color:var(--muted); font-size:14px; margin-top:4px; }
+.route-card { display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin:0 16px 12px; cursor:pointer; touch-action:manipulation; }
+.route-card:active { border-color:var(--accent); }
+.route-card-actions { display:none; gap:6px; }
+.route-card:hover .route-card-actions { display:flex; }
+.route-icon { width:44px; height:44px; background:rgba(79,110,247,0.15); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.route-info { flex:1; min-width:0; }
+.route-name { font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.route-meta { font-size:12px; color:var(--muted); margin-top:3px; }
+.empty-state { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; gap:10px; }
+.empty-icon { font-size:48px; margin-bottom:8px; }
+.empty-state h3 { font-size:18px; font-weight:700; }
+.empty-state p { color:var(--muted); font-size:14px; line-height:1.5; }
+
+/* RECORD */
+.rec-card { margin:16px; }
+.rec-live { display:none; align-items:center; }
+.rec-dot { width:10px; height:10px; border-radius:50%; background:var(--danger); animation:blink 1.2s infinite; margin-right:6px; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.rec-label { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; }
+.rec-count { font-size:28px; font-weight:800; letter-spacing:-1px; margin-top:2px; }
+.rec-accuracy { font-size:12px; color:var(--warning); margin-top:4px; }
+.stop-row { display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
+.stop-row:last-child { border-bottom:none; }
+.stop-badge { width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; margin-top:2px; }
+.stop-title { font-weight:600; font-size:14px; }
+.stop-note { font-size:12px; color:var(--muted); margin-top:2px; }
+.stop-category { font-size:11px; color:var(--accent); margin-top:2px; font-weight:600; }
+.stop-address { font-size:12px; color:var(--muted); margin-top:2px; }
+
+/* NAVIGATE */
+.nav-hero { margin:16px; background:linear-gradient(135deg, rgba(79,110,247,0.12), rgba(123,147,255,0.05)); border:1.5px solid rgba(79,110,247,0.25); border-radius:16px; padding:18px; }
+.nav-hero-name { font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+.nav-hero-meta { font-size:13px; color:var(--muted); margin-top:4px; }
+.progress-bar { height:5px; background:var(--border); border-radius:3px; margin-top:12px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--accent); border-radius:3px; transition:width 0.4s; }
+
+.maps-parts { display:flex; flex-direction:column; gap:8px; }
+.maps-part-btn { display:flex; align-items:center; justify-content:space-between; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:13px 16px; text-decoration:none; color:var(--accent); font-weight:600; font-size:13px; }
+.maps-part-btn:active { border-color:var(--accent); }
+.maps-part-label { font-size:14px; font-weight:700; }
+.maps-part-range { font-size:12px; color:var(--muted); margin-top:2px; }
+.maps-part-icon { color:var(--accent2); flex-shrink:0; }
+.maps-split-note { font-size:12px; color:var(--muted); padding:10px 4px 2px; line-height:1.5; }
+
+.stop-nav-row { display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.stop-nav-row:last-child { border-bottom:none; }
+.stop-nav-row.is-done .stop-badge { background:var(--border); }
+.stop-nav-row.is-done .stop-title { color:var(--muted); text-decoration:line-through; }
+.stop-nav-row.is-active .stop-badge { background:var(--accent); box-shadow:0 0 0 4px rgba(79,110,247,0.25); }
+.stop-nav-row.is-upcoming .stop-badge { background:var(--surface2); color:var(--muted); border:1.5px solid var(--border); }
+.done-btn { background:var(--success); color:#fff; border:none; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; flex-shrink:0; touch-action:manipulation; }
+
+.route-option { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:8px; cursor:pointer; touch-action:manipulation; }
+.route-option:active { border-color:var(--accent); }
+.route-option-name { font-weight:700; font-size:15px; }
+.route-option-meta { font-size:12px; color:var(--muted); margin-top:3px; }
+
+/* ABOUT MODAL (slide-over) */
+.about-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:500; }
+.about-overlay.open { display:block; }
+.about-panel { position:absolute; top:0; left:0; bottom:0; width:84%; max-width:340px; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; transform:translateX(-100%); transition:transform 0.3s ease; }
+.about-overlay.open .about-panel { transform:translateX(0); }
+.about-close { position:absolute; top:14px; right:-44px; background:var(--surface); border:1px solid var(--border); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; color:var(--text); cursor:pointer; border:none; }
+.about-body { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 24px; text-align:center; }
+.about-emoji { font-size:48px; margin-bottom:14px; }
+.about-name { font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+.about-tag { font-size:13px; color:var(--muted); margin-top:4px; }
+.about-line { width:50px; height:1px; background:var(--border); margin:26px auto; }
+.about-of { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.about-net { font-size:16px; font-weight:700; margin-bottom:24px; }
+.about-quote { font-size:14px; color:var(--purple); font-style:italic; line-height:1.8; margin-bottom:16px; }
+.about-sacred { font-size:9px; color:var(--purple-faint); letter-spacing:2.2px; text-transform:uppercase; }
+.about-links { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+.about-link-btn { padding:10px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--accent); text-decoration:none; font-size:13px; font-weight:600; cursor:pointer; }
+
+/* MODAL */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:400; align-items:flex-end; justify-content:center; }
+.overlay.open { display:flex; }
+.modal-sheet { background:var(--surface); border-radius:20px 20px 0 0; padding:20px 20px 36px; width:100%; max-width:480px; display:flex; flex-direction:column; gap:12px; max-height:85vh; overflow-y:auto; }
+.modal-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 6px; }
+.modal-title { font-size:18px; font-weight:700; }
+
+/* CATEGORY BUTTONS */
+.category-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.category-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:14px 12px; background:var(--surface2); border:2px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s; }
+.category-btn:active { border-color:var(--accent); background:rgba(79,110,247,0.1); }
+.category-btn.selected { border-color:var(--accent); background:rgba(79,110,247,0.15); }
+.category-btn svg { width:24px; height:24px; }
+
+/* TABS */
+.tab-container { display:flex; gap:8px; margin-bottom:12px; border-bottom:1px solid var(--border); }
+.tab-btn { background:none; border:none; padding:12px 16px; color:var(--muted); font-weight:600; font-size:13px; cursor:pointer; border-bottom:2px solid transparent; transition:all 0.2s; }
+.tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* ROUTE MANAGEMENT MODAL */
+.edit-row { display:flex; gap:8px; margin-bottom:12px; align-items:center; }
+.edit-row label { font-size:12px; font-weight:600; min-width:60px; }
+.edit-row input { flex:1; }
+.edit-actions { display:flex; gap:8px; margin-top:12px; }
+
+/* EXPORT/IMPORT */
+.data-actions { display:flex; gap:6px; flex-wrap:wrap; }
+.data-btn { flex:1; min-width:120px; }
+
+/* STATUS UPDATE */
+.status-spinner { display:inline-block; width:12px; height:12px; border:2px solid var(--accent); border-top-color:transparent; border-radius:50%; animation:spin 0.6s linear infinite; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Toast notification */
+@keyframes slideUp { from { transform:translateY(100px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@keyframes slideDown { from { transform:translateY(0); opacity:1; } to { transform:translateY(100px); opacity:0; } }
+#toast-notification { animation:slideUp 0.3s ease !important; z-index:9999; }
 </style>
 </head>
 <body>
@@ -55,8 +214,254 @@ html, body { height:100%; background:var(--bg); color:var(--text); font-family:'
     </div>
   </div>
 
-  <!-- (the rest of index.html remains unchanged) -->
+  <!-- ═══════════ RECORD ═══════════ -->
+  <div class="screen" id="screen-record">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="navBackToHome()" aria-label="Back to home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <h1>re<span>Router</span></h1>
+      </div>
+      <span class="topbar-right" id="rec-status" role="status" aria-live="polite">Ready</span>
+    </div>
 
+    <div class="banner banner-warning" id="draft-banner" style="display:none">
+      <b>📋 Unfinished session found</b>
+      <span id="draft-desc">You have stops from a previous session.</span>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-outline" style="padding:10px;font-size:13px;border-radius:9px" onclick="draftDiscard()">Discard</button>
+        <button class="btn btn-primary" style="padding:10px;font-size:13px;border-radius:9px" onclick="draftResume()">Resume</button>
+      </div>
+    </div>
+
+    <div class="banner banner-danger" id="perm-banner" style="display:none">
+      <b>📍 Location access blocked</b>
+      Allow location in your browser settings, then tap Try Again.
+    </div>
+
+    <div class="banner banner-info" id="accuracy-banner" style="display:none">
+      <b>⚠️ Poor GPS accuracy</b>
+      <span id="accuracy-msg">Your location accuracy is low (~<span id="accuracy-val">0</span>m). Stops may be imprecise.</span>
+    </div>
+
+    <div class="pad" style="padding-bottom:0">
+      <div class="card rec-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div>
+            <div class="rec-label" id="rec-mode">Not recording</div>
+            <div class="rec-count" id="rec-count">0 stops</div>
+            <div class="rec-accuracy" id="rec-accuracy" style="display:none"></div>
+          </div>
+          <div class="rec-live" id="rec-live">
+            <div class="rec-dot"></div>
+            <span style="font-size:13px;font-weight:700;color:var(--danger)">LIVE</span>
+          </div>
+        </div>
+        <div id="rec-btns">
+          <button class="btn btn-primary" onclick="recStart()">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>
+            Start Recording
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pad" id="mark-btn-wrap" style="display:none;padding-top:10px">
+      <button class="btn btn-outline" onclick="openMarkModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+        </svg>
+        Mark Stop Here
+      </button>
+    </div>
+
+    <div id="rec-list" style="padding:0 16px"></div>
+
+    <div class="pad" id="save-wrap" style="display:none">
+      <div style="margin-bottom:10px">
+        <label class="field-label">Route Name</label>
+        <input type="text" id="route-name" placeholder="e.g. Morning Delivery Route">
+      </div>
+      <button class="btn btn-success" onclick="recSave()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Save Route
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ NAVIGATE ═══════════ -->
+  <div class="screen" id="screen-navigate">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="aboutOpen()" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+        </button>
+        <h1>re<span>Router</span></h1>
+      </div>
+      <span class="topbar-right" id="nav-status" role="status" aria-live="polite">Select route</span>
+    </div>
+
+    <div id="nav-picker">
+      <div class="pad" style="padding-bottom:0">
+        <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Choose a route:</p>
+        <div id="nav-options"></div>
+      </div>
+      <div class="empty-state" id="nav-empty" style="display:none">
+        <div class="empty-icon">🗺️</div>
+        <h3>No routes yet</h3>
+        <p>Record a route first, then come back to navigate it.</p>
+      </div>
+    </div>
+
+    <div id="nav-active" style="display:none;flex-direction:column">
+      <div class="nav-hero">
+        <div class="nav-hero-name" id="nav-route-name">–</div>
+        <div class="nav-hero-meta" id="nav-route-meta">–</div>
+        <div class="progress-bar"><div class="progress-fill" id="nav-progress" style="width:0%"></div></div>
+      </div>
+
+      <div class="pad" style="padding-top:0;padding-bottom:4px">
+        <div id="maps-launch-area"></div>
+      </div>
+
+      <div id="nav-stops-wrap" style="padding:0 16px">
+        <div class="field-label" style="padding:4px 0 8px">Stops</div>
+        <div id="nav-stops"></div>
+      </div>
+
+      <div class="pad" style="padding-top:8px">
+        <button class="btn btn-outline" onclick="navReset()">← Back to Routes</button>
+      </div>
+    </div>
+
+    <div class="empty-state" id="nav-done" style="display:none">
+      <div class="empty-icon">🎉</div>
+      <h3>Route Complete!</h3>
+      <p>All stops delivered.</p>
+      <div style="margin-top:20px;width:100%">
+        <button class="btn btn-primary" onclick="navReset()">Back to Routes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ BOTTOM NAV (3 tabs only) ═══════════ -->
+  <nav id="bottom-nav" role="navigation">
+    <button class="nav-btn active" id="nb-home" onclick="showScreen('home')" aria-label="Routes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Routes
+    </button>
+    <button class="nav-btn" id="nb-record" onclick="showRecord()" aria-label="Record">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></svg>
+      Record
+    </button>
+    <button class="nav-btn" id="nb-navigate" onclick="showNavigate()" aria-label="Navigate">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      Navigate
+    </button>
+  </nav>
+
+</div>
+
+<!-- ═══════════ ABOUT SLIDE-OVER ═══════════ -->
+<div class="about-overlay" id="about-overlay" onclick="aboutClickOutside(event)">
+  <div class="about-panel">
+    <button class="about-close" onclick="aboutClose()" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="about-body">
+      <div class="about-emoji">🛣️</div>
+      <div class="about-name">reRouter</div>
+      <div class="about-tag">Track once. Drive forever.</div>
+      <div class="about-line"></div>
+      <div class="about-of">a product of the</div>
+      <div class="about-net">Between Extremes Network</div>
+      <div class="about-quote">They say diamonds are forever<br>I say diamonds are for everyone</div>
+      <div class="about-sacred">Sacred as Becoming</div>
+      <div class="about-links">
+        <button class="about-link-btn" onclick="exportRoutes()" aria-label="Export routes as JSON">📥 Export Routes</button>
+        <button class="about-link-btn" onclick="importRoutes()" aria-label="Import routes from JSON">📤 Import Routes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ROUTE MANAGEMENT MODAL ═══════════ -->
+<div class="overlay" id="modal-edit-route">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✏️ Manage Route</div>
+    <div class="edit-row">
+      <label>Name:</label>
+      <input type="text" id="edit-route-name" placeholder="Route name">
+    </div>
+    <div class="edit-row">
+      <label>Stops:</label>
+      <span id="edit-route-stops" style="font-size:14px;font-weight:600"></span>
+    </div>
+    <div class="edit-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveEditRoute()">Save</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteRoute()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MARK STOP MODAL ═══════════ -->
+<div class="overlay" id="modal-mark">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📍 Mark Stop</div>
+    
+    <div id="mark-step-1">
+      <div style="margin-bottom:16px">
+        <div class="field-label" style="margin-bottom:10px">Select Stop Type</div>
+        <div class="category-grid">
+          <button class="category-btn" onclick="selectCategory('shop')" data-category="shop">
+            <span>🏪</span>
+            <span>Shop</span>
+          </button>
+          <button class="category-btn" onclick="selectCategory('petrol')" data-category="petrol">
+            <span>⛽</span>
+            <span>Petrol Station</span>
+          </button>
+          <button class="category-btn" onclick="selectCategory('bakery')" data-category="bakery">
+            <span>🥖</span>
+            <span>Bakery</span>
+          </button>
+          <button class="category-btn" onclick="selectCategory('other')" data-category="other">
+            <span>📍</span>
+            <span>Other</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label class="field-label">Stop Name</label>
+        <input type="text" id="modal-stop-name" placeholder="e.g. Pick n Pay Sommerschield">
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label class="field-label">Address (optional)</label>
+        <input type="text" id="modal-stop-address" placeholder="e.g. 123 Main Street, City">
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label class="field-label">Driver Notes (optional)</label>
+        <textarea id="modal-stop-note" placeholder="e.g. Park at back, collect from cashier 2"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn btn-outline" onclick="closeMarkModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="markStopConfirm()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+        Add Stop
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- Hidden file input for import -->
@@ -69,11 +474,616 @@ html, body { height:100%; background:var(--bg); color:var(--text); font-family:'
 function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function fmtDate(ts) { var d = new Date(ts); return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }); }
 
-// (main app script continues unchanged)
+// ─── STATE ───────────────────────────────────────────────
+var routes = [];
+var recording = false;
+var recStops = [];
+var gpsPos = null;
+var gpsAccuracy = null;
+var gpsWatchId = null;
+var activeRoute = null;
+var doneCount = 0;
+var resumedSessionIndex = null;
+var MAPS_CHUNK_SIZE = 10;
+var editingRouteIndex = null;
+var isOnline = navigator.onLine;
+var selectedCategory = null;
+var backPressCount = 0;
+var backPressTimer = null;
 
+// ─── STORAGE (with IndexedDB fallback) ─────────────────
+var DB_NAME = 'reRouterDB';
+var DB_VERSION = 1;
+var DB_STORE = 'routes';
+var useIndexedDB = false;
+
+function initDB() {
+  try {
+    if (!window.indexedDB) {
+      console.log('IndexedDB not available, using localStorage');
+      return;
+    }
+    var request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = function() { console.log('IndexedDB error, falling back to localStorage'); };
+    request.onsuccess = function(e) {
+      var db = e.target.result;
+      if (!db.objectStoreNames.contains(DB_STORE)) {
+        db.close();
+        return;
+      }
+      useIndexedDB = true;
+    };
+    request.onupgradeneeded = function(e) {
+      var db = e.target.result;
+      if (!db.objectStoreNames.contains(DB_STORE)) {
+        db.createObjectStore(DB_STORE, { keyPath: 'id' });
+      }
+    };
+  } catch(err) { console.log('IndexedDB init error:', err); }
+}
+
+function storeSave() {
+  try {
+    localStorage.setItem('rr_routes', JSON.stringify(routes));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') {
+      showNotification('⚠️ Storage full. Delete old routes to continue.');
+    }
+  }
+}
+
+function storeLoad() {
+  try {
+    var d = localStorage.getItem('rr_routes');
+    if (d) {
+      routes = JSON.parse(d);
+      validateRoutes();
+    }
+  } catch(e) { console.error('storeLoad error:', e); }
+}
+
+function validateRoutes() {
+  routes = routes.filter(function(r) {
+    return r && r.name && Array.isArray(r.stops) && r.ts;
+  });
+}
+
+function draftSave() {
+  if (!recStops.length) return;
+  try {
+    localStorage.setItem('rr_draft', JSON.stringify({ stops: recStops, ts: Date.now() }));
+  } catch(e) { console.error('draftSave error:', e); }
+}
+
+function draftLoad() {
+  try {
+    var d = localStorage.getItem('rr_draft');
+    return d ? JSON.parse(d) : null;
+  } catch(e) { return null; }
+}
+
+function draftClear() {
+  try { localStorage.removeItem('rr_draft'); } catch(e) {}
+}
+
+// ─── NETWORK STATUS ──────────────────────────────────────
+function updateNetworkStatus() {
+  isOnline = navigator.onLine;
+  var badge = document.getElementById('offline-badge');
+  if (!isOnline) { badge.style.display = 'inline-block'; }
+  else { badge.style.display = 'none'; }
+}
+
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);
+
+// ─── SCREEN NAVIGATION ───────────────────────────────────
+function showScreen(name) {
+  var screens = ['home','record','navigate'];
+  screens.forEach(function(s) {
+    document.getElementById('screen-' + s).classList.toggle('active', s === name);
+    document.getElementById('nb-' + s).classList.toggle('active', s === name);
+  });
+}
+
+function showRecord() { showScreen('record'); recInit(); }
+function showNavigate() { showScreen('navigate'); navInit(); }
+
+// ─── BACK BUTTON NAVIGATION ──────────────────────────────
+function navBackToHome() {
+  backPressCount++;
+  
+  if (backPressCount === 1) {
+    showScreen('home');
+    showNotification('Press back 1 more time to leave the app');
+    
+    if (backPressTimer) clearTimeout(backPressTimer);
+    backPressTimer = setTimeout(function() {
+      backPressCount = 0;
+    }, 2000);
+  } else if (backPressCount === 2) {
+    if (confirm('Leave the app?')) {
+      window.history.back();
+    }
+    backPressCount = 0;
+  }
+}
+
+// ─── ABOUT SLIDE-OVER ────────────────────────────────────
+function aboutOpen() { document.getElementById('about-overlay').classList.add('open'); }
+function aboutClose() { document.getElementById('about-overlay').classList.remove('open'); }
+function aboutClickOutside(e) { if (e.target.id === 'about-overlay') aboutClose(); }
+
+// ─── HOME ─────────────────────────────────────────────────
+function homeRender() {
+  var n = routes.length;
+  document.getElementById('home-count').textContent = n + ' route' + (n !== 1 ? 's' : '');
+  var el = document.getElementById('home-list');
+  if (!n) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🛣️</div><h3>No routes yet</h3><p>Hit Record to track your first delivery route.</p></div>';
+    return;
+  }
+  el.innerHTML = routes.map(function(r, i) {
+    return '<div class="route-card" role="button" tabindex="0" onclick="navLoadRoute(' + i + ')" onkeypress="if(event.key===\'Enter\')navLoadRoute(' + i + ')">' +
+      '<div class="route-icon">🗺️</div>' +
+      '<div class="route-info">' +
+        '<div class="route-name">' + esc(r.name) + '</div>' +
+        '<div class="route-meta">' + r.stops.length + ' stop' + (r.stops.length !== 1 ? 's' : '') + ' · ' + fmtDate(r.ts) + '</div>' +
+      '</div>' +
+      '<div class="route-card-actions">' +
+        '<button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); openEditModal(' + i + ')" aria-label="Edit route">✏️</button>' +
+      '</div>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--muted);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>' +
+    '</div>';
+  }).join('');
+}
+
+// ─── ROUTE MANAGEMENT ─────────────────────────────────────
+function openEditModal(i) {
+  editingRouteIndex = i;
+  var r = routes[i];
+  document.getElementById('edit-route-name').value = r.name;
+  document.getElementById('edit-route-stops').textContent = r.stops.length + ' stop' + (r.stops.length !== 1 ? 's' : '');
+  document.getElementById('modal-edit-route').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('modal-edit-route').classList.remove('open');
+  editingRouteIndex = null;
+}
+
+function saveEditRoute() {
+  if (editingRouteIndex === null) return;
+  var name = document.getElementById('edit-route-name').value.trim();
+  if (!name) { document.getElementById('edit-route-name').focus(); return; }
+  routes[editingRouteIndex].name = name;
+  storeSave();
+  homeRender();
+  closeEditModal();
+  showNotification('✓ Route updated');
+}
+
+function deleteRoute() {
+  if (editingRouteIndex === null || !confirm('Delete this route? This cannot be undone.')) return;
+  routes.splice(editingRouteIndex, 1);
+  storeSave();
+  homeRender();
+  closeEditModal();
+  showNotification('🗑️ Route deleted');
+}
+
+// ─── EXPORT/IMPORT ────────────────────────────────────────
+function exportRoutes() {
+  var data = {
+    version: 1,
+    exported_at: new Date().toISOString(),
+    route_count: routes.length,
+    routes: routes
+  };
+  var json = JSON.stringify(data, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'reRouter_routes_' + new Date().getTime() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showNotification('✓ Routes exported');
+  aboutClose();
+}
+
+function importRoutes() {
+  document.getElementById('import-file').click();
+}
+
+function handleFileImport(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!data.routes || !Array.isArray(data.routes)) {
+        showNotification('❌ Invalid routes file format');
+        return;
+      }
+      var imported = 0;
+      data.routes.forEach(function(r) {
+        if (r && r.name && Array.isArray(r.stops)) {
+          routes.push(r);
+          imported++;
+        }
+      });
+      if (imported > 0) {
+        storeSave();
+        homeRender();
+        showNotification('✓ Imported ' + imported + ' route' + (imported !== 1 ? 's' : ''));
+      } else {
+        showNotification('❌ No valid routes found in file');
+      }
+    } catch(err) {
+      showNotification('❌ Failed to import: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ─── RECORD ──────────────────────────────────────────────
+function recInit() {
+  if (recording) return;
+  var draft = draftLoad();
+  var db = document.getElementById('draft-banner');
+  if (draft && draft.stops && draft.stops.length > 0) {
+    var mins = Math.round((Date.now() - draft.ts) / 60000);
+    document.getElementById('draft-desc').textContent =
+      draft.stops.length + ' stop' + (draft.stops.length !== 1 ? 's' : '') +
+      ' saved ' + (mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago') + '.';
+    db.style.display = 'block';
+  } else { db.style.display = 'none'; }
+
+  recStops = [];
+  gpsPos = null;
+  gpsAccuracy = null;
+  recRender();
+  document.getElementById('rec-status').textContent = 'Ready';
+  document.getElementById('rec-mode').textContent = 'Not recording';
+  document.getElementById('rec-count').textContent = '0 stops';
+  document.getElementById('rec-accuracy').style.display = 'none';
+  document.getElementById('rec-live').style.display = 'none';
+  document.getElementById('mark-btn-wrap').style.display = 'none';
+  document.getElementById('save-wrap').style.display = 'none';
+  document.getElementById('perm-banner').style.display = 'none';
+  document.getElementById('accuracy-banner').style.display = 'none';
+  document.getElementById('rec-list').innerHTML = '';
+  document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Recording</button>';
+  document.getElementById('route-name').value = '';
+}
+
+function draftResume() {
+  var draft = draftLoad();
+  if (!draft) return;
+  recStops = draft.stops;
+  document.getElementById('draft-banner').style.display = 'none';
+  recRender();
+  recUpdateCount();
+  recStart();
+}
+
+function draftDiscard() {
+  draftClear();
+  recStops = [];
+  document.getElementById('draft-banner').style.display = 'none';
+  recRender();
+  recUpdateCount();
+}
+
+function recStart() {
+  if (!navigator.geolocation) { showNotification('❌ Geolocation not supported'); return; }
+  recording = true;
+  document.getElementById('perm-banner').style.display = 'none';
+  document.getElementById('accuracy-banner').style.display = 'none';
+  document.getElementById('rec-mode').textContent = 'Getting GPS…';
+  document.getElementById('rec-status').textContent = 'Locating…';
+  document.getElementById('rec-btns').innerHTML = '<button class="btn btn-danger" onclick="recStop()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Stop Recording</button>';
+
+  gpsWatchId = navigator.geolocation.watchPosition(
+    function(pos) {
+      gpsPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      gpsAccuracy = Math.round(pos.coords.accuracy);
+      document.getElementById('rec-status').textContent = 'GPS ✓ ±' + gpsAccuracy + 'm';
+      document.getElementById('rec-mode').textContent = 'Recording';
+      document.getElementById('rec-accuracy').textContent = 'Accuracy: ±' + gpsAccuracy + 'm';
+      document.getElementById('rec-accuracy').style.display = gpsAccuracy > 50 ? 'block' : 'none';
+      document.getElementById('rec-live').style.display = 'flex';
+      document.getElementById('mark-btn-wrap').style.display = 'block';
+      if (gpsAccuracy > 100) {
+        document.getElementById('accuracy-banner').style.display = 'block';
+        document.getElementById('accuracy-val').textContent = gpsAccuracy;
+      } else {
+        document.getElementById('accuracy-banner').style.display = 'none';
+      }
+    },
+    function(err) {
+      recording = false;
+      if (gpsWatchId !== null) { navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
+      document.getElementById('rec-live').style.display = 'none';
+      document.getElementById('mark-btn-wrap').style.display = 'none';
+      var msg = 'GPS failed';
+      if (err.code === 1) { msg = 'Location blocked'; document.getElementById('perm-banner').style.display = 'block'; }
+      else if (err.code === 2) msg = 'No GPS signal';
+      else if (err.code === 3) msg = 'GPS timed out';
+      document.getElementById('rec-status').textContent = msg;
+      document.getElementById('rec-mode').textContent = 'Not recording';
+      document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Recording</button>';
+    },
+    { enableHighAccuracy: true, maximumAge: 3000, timeout: 30000 }
+  );
+}
+
+function recStop() {
+  recording = false;
+  if (gpsWatchId !== null) { navigator.geolocation.clearWatch(gpsWatchId); gpsWatchId = null; }
+  document.getElementById('rec-live').style.display = 'none';
+  document.getElementById('mark-btn-wrap').style.display = 'none';
+  document.getElementById('rec-status').textContent = 'Stopped';
+  document.getElementById('rec-mode').textContent = 'Recording stopped';
+  if (!recStops.length) {
+    draftClear();
+    document.getElementById('rec-btns').innerHTML = '<button class="btn btn-primary" onclick="recStart()"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="12" r="8"/></svg>Start Recording</button>';
+    return;
+  }
+  document.getElementById('save-wrap').style.display = 'block';
+  document.getElementById('rec-btns').innerHTML = '<button class="btn btn-outline" onclick="recDiscard()">Discard</button>';
+}
+
+function recDiscard() { draftClear(); recInit(); }
+
+function recSave() {
+  var name = document.getElementById('route-name').value.trim();
+  if (!name) { document.getElementById('route-name').focus(); return; }
+  if (!recStops.length) { showNotification('❌ Add at least one stop first.'); return; }
+  routes.unshift({ name: name, stops: recStops, ts: Date.now() });
+  storeSave();
+  draftClear();
+  homeRender();
+  recStops = [];
+  showNotification('✓ Route saved');
+  showScreen('home');
+}
+
+function recUpdateCount() {
+  var n = recStops.length;
+  document.getElementById('rec-count').textContent = n + ' stop' + (n !== 1 ? 's' : '');
+}
+
+function recRender() {
+  var el = document.getElementById('rec-list');
+  if (!recStops.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="card" style="margin-top:4px">' +
+    '<div class="field-label" style="margin-bottom:10px">Recorded Stops</div>' +
+    recStops.map(function(s, i) {
+      return '<div class="stop-row">' +
+        '<div class="stop-badge">' + (i+1) + '</div>' +
+        '<div>' +
+          '<div class="stop-title">' + esc(s.name) + '</div>' +
+          (s.category ? '<div class="stop-category">' + esc(getCategoryLabel(s.category)) + '</div>' : '') +
+          (s.address ? '<div class="stop-address">' + esc(s.address) + '</div>' : '') +
+          (s.note ? '<div class="stop-note">' + esc(s.note) + '</div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('') +
+  '</div>';
+}
+
+function getCategoryLabel(cat) {
+  var labels = { shop: '🏪 Shop', petrol: '⛽ Petrol Station', bakery: '🥖 Bakery', other: '📍 Other' };
+  return labels[cat] || cat;
+}
+
+// ─── MARK STOP MODAL ─────────────────────────────────────
+function openMarkModal() {
+  selectedCategory = null;
+  document.getElementById('modal-stop-name').value = '';
+  document.getElementById('modal-stop-address').value = '';
+  document.getElementById('modal-stop-note').value = '';
+  document.querySelectorAll('.category-btn').forEach(function(btn) {
+    btn.classList.remove('selected');
+  });
+  document.getElementById('modal-mark').classList.add('open');
+  setTimeout(function() { document.getElementById('modal-stop-name').focus(); }, 120);
+}
+
+function closeMarkModal() {
+  document.getElementById('modal-mark').classList.remove('open');
+  selectedCategory = null;
+}
+
+function selectCategory(cat) {
+  selectedCategory = cat;
+  document.querySelectorAll('.category-btn').forEach(function(btn) {
+    btn.classList.toggle('selected', btn.getAttribute('data-category') === cat);
+  });
+}
+
+function markStopConfirm() {
+  var name = document.getElementById('modal-stop-name').value.trim();
+  if (!name) { document.getElementById('modal-stop-name').focus(); return; }
+  
+  var address = document.getElementById('modal-stop-address').value.trim();
+  var note = document.getElementById('modal-stop-note').value.trim();
+  
+  // Check for duplicate stops at same location (within 20m)
+  if (gpsPos) {
+    var isDuplicate = recStops.some(function(s) {
+      if (!s.lat || !s.lng) return false;
+      var dist = Math.sqrt(Math.pow(s.lat - gpsPos.lat, 2) + Math.pow(s.lng - gpsPos.lng, 2)) * 111000; // rough km to m
+      return dist < 20;
+    });
+    if (isDuplicate) {
+      showNotification('⚠️ Stop too close to a previous one. Still adding.');
+    }
+  }
+  
+  recStops.push({
+    name: name,
+    category: selectedCategory,
+    address: address,
+    note: note,
+    lat: gpsPos ? gpsPos.lat : null,
+    lng: gpsPos ? gpsPos.lng : null
+  });
+  
+  draftSave();
+  closeMarkModal();
+  recUpdateCount();
+  recRender();
+  
+  // Haptic feedback
+  if (navigator.vibrate) navigator.vibrate(100);
+  showNotification('✓ Stop marked');
+}
+
+// ─── NAVIGATE ────────────────────────────────────────────
+function navInit() {
+  if (activeRoute) { navRenderActive(); return; }
+  document.getElementById('nav-active').style.display = 'none';
+  document.getElementById('nav-done').style.display = 'none';
+  document.getElementById('nav-picker').style.display = 'block';
+
+  var opts = document.getElementById('nav-options');
+  var empty = document.getElementById('nav-empty');
+  if (!routes.length) { opts.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  opts.innerHTML = routes.map(function(r, i) {
+    return '<div class="route-option" role="button" tabindex="0" onclick="navLoadRoute(' + i + ')" onkeypress="if(event.key===\'Enter\')navLoadRoute(' + i + ')">' +
+      '<div class="route-option-name">' + esc(r.name) + '</div>' +
+      '<div class="route-option-meta">' + r.stops.length + ' stop' + (r.stops.length !== 1 ? 's' : '') + ' · ' + fmtDate(r.ts) + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function navLoadRoute(i) {
+  activeRoute = routes[i];
+  doneCount = 0;
+  resumedSessionIndex = i;
+  showScreen('navigate');
+  navRenderActive();
+}
+
+function navRenderActive() {
+  document.getElementById('nav-picker').style.display = 'none';
+  document.getElementById('nav-done').style.display = 'none';
+  document.getElementById('nav-active').style.display = 'flex';
+
+  var r = activeRoute;
+  var total = r.stops.length;
+  var done = doneCount;
+
+  document.getElementById('nav-status').textContent = r.name;
+  document.getElementById('nav-route-name').textContent = r.name;
+  document.getElementById('nav-route-meta').textContent = done + ' of ' + total + ' stops done';
+  document.getElementById('nav-progress').style.width = (total > 0 ? (done / total) * 100 : 0) + '%';
+
+  renderMapsLaunchArea();
+
+  document.getElementById('nav-stops').innerHTML = r.stops.map(function(s, i) {
+    var cls = i < doneCount ? 'is-done' : i === doneCount ? 'is-active' : 'is-upcoming';
+    var numLabel = i < doneCount ? '✓' : (i + 1);
+    return '<div class="stop-nav-row ' + cls + '">' +
+      '<div class="stop-badge">' + numLabel + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="stop-title">' + esc(s.name) + '</div>' +
+        (s.category ? '<div class="stop-category">' + esc(getCategoryLabel(s.category)) + '</div>' : '') +
+        (s.address ? '<div class="stop-address">' + esc(s.address) + '</div>' : '') +
+        (s.note ? '<div class="stop-note">' + esc(s.note) + '</div>' : '') +
+      '</div>' +
+      (i === doneCount && i < total - 1 ? '<button class="done-btn" onclick="navMarkDone()">Done</button>' : '') +
+    '</div>';
+  }).join('');
+
+  if (doneCount >= total) {
+    document.getElementById('nav-picker').style.display = 'none';
+    document.getElementById('nav-active').style.display = 'none';
+    document.getElementById('nav-done').style.display = 'flex';
+  }
+}
+
+function renderMapsLaunchArea() {
+  if (!activeRoute || activeRoute.stops.length === 0) return;
+  
+  var area = document.getElementById('maps-launch-area');
+  var currentStop = activeRoute.stops[doneCount];
+  
+  if (!currentStop || !currentStop.lat || !currentStop.lng) {
+    area.innerHTML = '<div class="maps-split-note">📍 No coordinates saved. Navigate manually.</div>';
+    return;
+  }
+  
+  var chunks = [];
+  for (var i = 0; i < activeRoute.stops.length; i += MAPS_CHUNK_SIZE) {
+    chunks.push(activeRoute.stops.slice(i, Math.min(i + MAPS_CHUNK_SIZE, activeRoute.stops.length)));
+  }
+  
+  area.innerHTML = '<div class="maps-parts">' +
+    chunks.map(function(chunk, ci) {
+      var startIdx = ci * MAPS_CHUNK_SIZE;
+      var endIdx = Math.min(startIdx + MAPS_CHUNK_SIZE - 1, activeRoute.stops.length - 1);
+      var label = startIdx === endIdx ? ('Stop ' + (startIdx + 1)) : ('Stops ' + (startIdx + 1) + '-' + (endIdx + 1));
+      var url = 'https://www.google.com/maps/dir/?api=1&waypoints=' +
+        chunk.map(function(s) { return s.lat + ',' + s.lng; }).join('|');
+      return '<a href="' + url + '" target="_blank" class="maps-part-btn" rel="noopener">' +
+        '<div><div class="maps-part-label">' + esc(label) + '</div><div class="maps-part-range">≈ ' + chunk.length + ' stop' + (chunk.length !== 1 ? 's' : '') + '</div></div>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" class="maps-part-icon"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' +
+      '</a>';
+    }).join('') +
+  '</div>';
+  
+  if (chunks.length > 1) {
+    area.innerHTML += '<div class="maps-split-note">💡 Route split into ' + chunks.length + ' segment' + (chunks.length !== 1 ? 's' : '') + ' for easier navigation.</div>';
+  }
+}
+
+function navMarkDone() {
+  if (doneCount < activeRoute.stops.length) {
+    doneCount++;
+    navRenderActive();
+    showNotification('✓ Stop marked complete');
+  }
+}
+
+function navReset() {
+  activeRoute = null;
+  doneCount = 0;
+  resumedSessionIndex = null;
+  showScreen('navigate');
+  navInit();
+}
+
+// ─── TOAST NOTIFICATION ──────────────────────────────────
+function showNotification(msg) {
+  var existing = document.getElementById('toast-notification');
+  if (existing) existing.remove();
+  
+  var toast = document.createElement('div');
+  toast.id = 'toast-notification';
+  toast.style.cssText = 'position:fixed;bottom:' + (68 + 16) + 'px;left:50%;transform:translateX(-50%);max-width:320px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:13px;text-align:center;color:var(--text);z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15)';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  
+  setTimeout(function() {
+    toast.style.animation = 'slideDown 0.3s ease forwards';
+    setTimeout(function() { toast.remove(); }, 300);
+  }, 2400);
+}
+
+// ─── INITIALIZATION ──────────────────────────────────────
+window.addEventListener('load', function() {
+  initDB();
+  storeLoad();
+  homeRender();
+  updateNetworkStatus();
+});
 </script>
-
-<!-- Maps & geocoding helper script (added) -->
-<script src="/maps-links.js"></script>
 </body>
 </html>
